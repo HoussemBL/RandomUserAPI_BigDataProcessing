@@ -27,7 +27,7 @@ object CollectLOGS {
     //reading stream of logs
     val dfCSV = spark.readStream.option("sep", " ")
       .option("header", "false")
-      .schema(Kafka.getschema())
+      .schema(Kafka.getschema()(0))
        .csv(kafkaprameters.path_datasource)
    
      

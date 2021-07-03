@@ -22,19 +22,19 @@ case class KafkaConsumer(topic: String, timewindow: Long) extends Kafka
 object KafkaConsumer{
   
  // transform the data consumed from a kafka topic to a dataframe  using the specified schema
-  def convertStreamToDF(schema:StructType,df_st: DataFrame): DataFrame = {
+  def convertStreamToDF(schema:List[StructType],df_st: DataFrame): DataFrame = {
 
-  val schema1 = new StructType()
-    .add("title", StringType, true)
-    .add("first", StringType, true)
-    .add("last", StringType, true)
+//  val schema1 = new StructType()
+//    .add("title", StringType, true)
+//    .add("first", StringType, true)
+//    .add("last", StringType, true)
     
        val personStringDF = df_st.selectExpr("CAST(value AS STRING)")
-    val personDF = personStringDF.select(from_json(col("value"), schema).as("data"))
+    val personDF = personStringDF.select(from_json(col("value"), schema(0)).as("data"))
      .select("data.*")
-     .select(col("nat"),col("gender"),from_json(col("name"), schema1).as("name"))
+     .select(col("nat"),col("gender"),from_json(col("name"), schema(1)).as("name"),from_json(col("location"), schema(2)).as("location"))
     //.select("data.*")
-     .select("nat","gender","name.*")
+     .select("nat","gender","name.*","location.city","location.state","location.country")
     return personDF
   }
 
