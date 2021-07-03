@@ -12,37 +12,27 @@ trait Kafka {
 //companion object
 object Kafka {
 
-  //schema used to read/write logs in kafka topics
+  //schema used to read/write users in kafka topics
 
-
-      
-//     final val schema = new StructType()
-//        .add("gender", StringType, true)
-//        .add("name", ArrayType(new StructType()
-//          .add("title", StringType)
-//          .add("first", StringType)
-//          .add("last", StringType)
-//        ) )
-//        .add("nat", StringType, true)
       
    final val schema = new StructType()
         .add("gender", StringType, true)
-        .add("name", /*new StructType()
-          .add("title", StringType)
-          .add("first", StringType)
-          .add("last", StringType)
-         )*/StringType, true)
+        .add("name",StringType, true)
+        .add("location",StringType, true)
         .add("nat", StringType, true)
   
-  val schema2 = new StructType()
-    .add("gender", StringType, true)
-    .add("name", schema1, true)
-    .add("nat", StringType, true)
-
-  val schema1 = new StructType()
+   val schema_name = new StructType()
     .add("title", StringType, true)
     .add("first", StringType, true)
     .add("last", StringType, true)
+    
+     val schema_location= new StructType()
+    .add("street", StringType, true)
+    .add("city", StringType, true)
+    .add("state", StringType, true)
+    .add("country", DoubleType, true)
+     .add("coordinates", DoubleType, true)
+     .add("timezone", DoubleType, true)
 
   //specify batch interval as a string
   def convertTimeToString(wait_time: Long): String = {
