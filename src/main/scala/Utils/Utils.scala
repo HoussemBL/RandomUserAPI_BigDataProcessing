@@ -9,6 +9,7 @@ import org.apache.spark.sql.types._
 import org.apache.spark.sql._
 import org.apache.spark.sql.functions._
 import stream._
+import db.DAO_Cassandra
 
 
 
@@ -21,6 +22,8 @@ object Utils{
       .master("local[*]")
       .appName("SparkByExample")
       .config("spark.cleaner.referenceTracking.cleanCheckpoints", "true")
+      .config("spark.cassandra.connection.host","localhost")
+      .config("spark.cassandra.connection.port",DAO_Cassandra.getPort())
       .getOrCreate()
   spark    
   }

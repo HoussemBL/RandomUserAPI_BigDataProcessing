@@ -33,10 +33,20 @@ import spark.implicits._
 
     val df_out = KafkaConsumer.convertStreamToDF(Kafka.getschema(),df)
 
-    val df_read = KafkaConsumer.queryStreamingDF(Kafka.convertTimeToString(kafkaprameters.timewindow),df_out)
+    val df_read = KafkaConsumer.print_console_StreamingDF(Kafka.convertTimeToString(kafkaprameters.timewindow),df_out)
 
+   
+    df_out.writeStream
+          .trigger(Trigger.ProcessingTime(Kafka.convertTimeToString(kafkaprameters.timewindow)))
+          .outputMode("update")
+          .foreachBatch{ (batchDF: DataFrame, batchId: Long) => KafkaConsumer.save_cassandra(batchDF)}
+          .start()
+          
     
-   KafkaConsumer.storeData_mysql(kafkaprameters.timewindow,df_read)
+    
+//      KafkaConsumer.save_cassandra(df_out)
+    
+  // KafkaConsumer.storeData_mysql(kafkaprameters.timewindow,df_read)
 
     df_read.awaitTermination()
 
