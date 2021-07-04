@@ -30,6 +30,27 @@ object DAO_visit {
     }
 
 
+   //read properties of mysql specified in src.main.resources
+  def readMYSQLProperties2(): Properties =
+    {
+      val url = getClass.getResource("/mysql2.properties")
+      val source = Source.fromURL(url)
+      val mysqlparameters = new Properties
+      mysqlparameters.load(source.bufferedReader())
+
+      mysqlparameters
+
+    }
+  
+  
+    def getURL() :String= readMYSQLProperties().getProperty("db_url")
+  def getTable() :String= readMYSQLProperties().getProperty("table")
+   def getUser() :String= readMYSQLProperties().getProperty("mysql_user")
+   def getPass() :String= readMYSQLProperties().getProperty("mysql_pass")
+   def getDriver() :String= readMYSQLProperties().getProperty("jdbc_driver")
+   
+
+  
 //insert visits number in mysql atabase
 def insert(timestamp: String, count: Long)={
   

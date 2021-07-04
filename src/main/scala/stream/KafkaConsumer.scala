@@ -15,6 +15,8 @@ import org.apache.spark.sql.streaming.StreamingQuery
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.catalyst.expressions.Uuid
 import org.apache.spark.sql.cassandra._
+import scala.util.Properties
+
 
 case class KafkaConsumer(topic: String, timewindow: Long) extends Kafka
 
@@ -45,7 +47,7 @@ object KafkaConsumer {
   }
 
   //store number of visits into mysql
-  def storeData_mysql(intervalBatch: Long, df_read: StreamingQuery) = {
+ /* def storeData_mysql(intervalBatch: Long, df_read: StreamingQuery) = {
     while (df_read.isActive) {
       if (df_read.lastProgress != null) {
         val time_visit = df_read.lastProgress.timestamp
@@ -55,8 +57,7 @@ object KafkaConsumer {
         Thread.sleep(intervalBatch * 1000 - 1000)
       }
     }
-
-  }
+  }*/
 
   //store number of visits into mysql
   def save_cassandra( df_read: DataFrame) = {
@@ -67,8 +68,38 @@ object KafkaConsumer {
       .mode("append")
       .options(mm)
       .save
-
     //}
   }
 
+  
+    //store number of visits into mysql
+  def save_mysql( df_read: DataFrame, batchId: Long) = {
+    
+    val df_agg = df_read.groupBy("country").agg(count("id").as("total_sum"))
+       .withColumn("processed_at", current_timestamp())
+      .withColumn("batch_id", lit(batchId))
+      .select("batch_id","country","processed_at","total_sum")
+ 
+
+    df_agg.write.format("jdbc")
+        .option("url",DAO_visit.getURL())
+        .option("dbtable", DAO_visit.getTable())
+        .option("user", DAO_visit.getUser())
+        .option("password", DAO_visit.getPass())
+       // .option("driver", DAO_visit.getDriver())
+        .mode("append")   
+        .save()
+ 
+        
+          // df_agg.write.jdbc(DAO_visit.getURL(),DAO_visit.getTable(),DAO_visit.readMYSQLProperties2())
+    
+  
+  }
+
+  
+  
+  
+  
+
+  
 }

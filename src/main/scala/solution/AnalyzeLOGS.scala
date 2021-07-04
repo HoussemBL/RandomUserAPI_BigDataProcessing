@@ -14,14 +14,12 @@ import java.util.Properties
 import scala.io.Source
 import Utils.Utils
 
-
 object AnalyzeLOGS {
   def main(args: Array[String]): Unit = {
 
-val   spark=Utils.getSpark()
-import spark.implicits._
- val kafkaprameters= Utils.getKafkaParameters()
-
+    val spark = Utils.getSpark()
+    import spark.implicits._
+    val kafkaprameters = Utils.getKafkaParameters()
 
     //consuming Kafka topic
     val df = spark.readStream
@@ -31,28 +29,26 @@ import spark.implicits._
       .option("startingOffsets", "earliest") // From starting
       .load()
 
-    val df_out = KafkaConsumer.convertStreamToDF(Kafka.getschema(),df)
+    val df_out = KafkaConsumer.convertStreamToDF(Kafka.getschema(), df)
 
-    val df_read = KafkaConsumer.print_console_StreamingDF(Kafka.convertTimeToString(kafkaprameters.timewindow),df_out)
+     val df_read = KafkaConsumer.print_console_StreamingDF(Kafka.convertTimeToString(kafkaprameters.timewindow),df_out)
 
-   
+    //write in cassandra
     df_out.writeStream
           .trigger(Trigger.ProcessingTime(Kafka.convertTimeToString(kafkaprameters.timewindow)))
           .outputMode("update")
           .foreachBatch{ (batchDF: DataFrame, batchId: Long) => KafkaConsumer.save_cassandra(batchDF)}
           .start()
-          
-    
-    
-//      KafkaConsumer.save_cassandra(df_out)
-    
-  // KafkaConsumer.storeData_mysql(kafkaprameters.timewindow,df_read)
+
+    //write in mysql
+        df_out.writeStream
+              .trigger(Trigger.ProcessingTime(Kafka.convertTimeToString(kafkaprameters.timewindow)))
+              .outputMode("update")
+              .foreachBatch{ (batchDF: DataFrame, batchId: Long) => KafkaConsumer.save_mysql(batchDF, batchId)}
+              .start()
 
     df_read.awaitTermination()
 
   }
-  
-  
-
 
 }
