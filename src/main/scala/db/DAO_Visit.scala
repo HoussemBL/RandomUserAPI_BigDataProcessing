@@ -31,7 +31,7 @@ object DAO_visit {
 
 
    //read properties of mysql specified in src.main.resources
-  def readMYSQLProperties2(): Properties =
+  /*def readMYSQLProperties2(): Properties =
     {
       val url = getClass.getResource("/mysql2.properties")
       val source = Source.fromURL(url)
@@ -39,8 +39,7 @@ object DAO_visit {
       mysqlparameters.load(source.bufferedReader())
 
       mysqlparameters
-
-    }
+    }*/
   
   
     def getURL() :String= readMYSQLProperties().getProperty("db_url")
