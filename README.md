@@ -1,6 +1,6 @@
 # RandomUserAPI_BigDataProcessing
 
-In this project, we recieve in real time from the following API
+In this project, we recieve data in real time from the following API
 https://randomuser.me/api/?inc=name,gender,nat,location&noinfo
 
 We consume these data in real time using kafka.
@@ -13,6 +13,6 @@ After that, we apply Lambda architcture.
 
 
 
-Stored data sent to Superset apache a dashboard tool.
+Processed data (stored in mysql) are sent to Superset apache a dashboard tool.
 Subsequently, we have defined in Superset a dashboard containing some charts ( about new entries) 
 ![superset](https://github.com/HoussemBL/RandomUserAPI_BigDataProcessing/blob/main/image/superset.png)
