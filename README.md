@@ -9,7 +9,7 @@ After that, we apply Lambda architcture.
 1. Thus we store raw data in cassandra database.
 2. In parallel, we store processed/cleaned data in msql database.
 
-![Architecture](https://user-images.githubusercontent.com/22003268/124357551-64024f00-dc1c-11eb-9709-1312d9139720.png)
+![Architecture](https://github.com/HoussemBL/RandomUserAPI_BigDataProcessing/blob/main/image/Architecture.png)
 
 
 
