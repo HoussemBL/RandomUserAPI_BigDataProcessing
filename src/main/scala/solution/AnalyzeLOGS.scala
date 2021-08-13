@@ -19,33 +19,21 @@ object AnalyzeLOGS {
 
     val spark = Utils.getSpark()
     import spark.implicits._
-    val kafkaprameters = Utils.getKafkaParameters()
+    //val kafkaprameters = Utils.getKafkaParameters()
 
     //consuming Kafka topic
     val df = spark.readStream
-      .format("kafka")
-      .option("kafka.bootstrap.servers", "localhost:9092")
-      .option("subscribe", kafkaprameters.topic)
-      .option("startingOffsets", "earliest") // From starting
+      .format("socket")
+      .option("host", "localhost")
+      .option("port", 9999)
       .load()
 
+      
     val df_out = KafkaConsumer.convertStreamToDF(Kafka.getschema(), df)
 
-     val df_read = KafkaConsumer.print_console_StreamingDF(Kafka.convertTimeToString(kafkaprameters.timewindow),df_out)
+    val df_read = KafkaConsumer.print_console_StreamingDF("3 seconds", df_out)
 
-    //write in cassandra
-    df_out.writeStream
-          .trigger(Trigger.ProcessingTime(Kafka.convertTimeToString(kafkaprameters.timewindow)))
-          .outputMode("update")
-          .foreachBatch{ (batchDF: DataFrame, batchId: Long) => KafkaConsumer.save_cassandra(batchDF)}
-          .start()
-
-    //write in mysql
-        df_out.writeStream
-              .trigger(Trigger.ProcessingTime(Kafka.convertTimeToString(kafkaprameters.timewindow)))
-              .outputMode("update")
-              .foreachBatch{ (batchDF: DataFrame, batchId: Long) => KafkaConsumer.save_mysql(batchDF, batchId)}
-              .start()
+    
 
     df_read.awaitTermination()
 

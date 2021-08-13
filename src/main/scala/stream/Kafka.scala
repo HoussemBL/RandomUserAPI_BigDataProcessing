@@ -14,28 +14,23 @@ trait Kafka {
 object Kafka {
 
   //schema used to read/write users in kafka topics
+ final val schema0 = new StructType()
+        .add("data", StringType, true)
 
-      
+        
    final val schema = new StructType()
-        .add("gender", StringType, true)
-        .add("name",StringType, true)
+        .add("deviceID", StringType, true)
+        .add("temperature",IntegerType, true)
         .add("location",StringType, true)
-        .add("nat", StringType, true)
+        .add("time", StringType, true)
   
-  final val schema_name = new StructType()
-    .add("title", StringType, true)
-    .add("first", StringType, true)
-    .add("last", StringType, true)
-    
+  
     final val schema_location= new StructType()
-    .add("street", StringType, true)
-    .add("city", StringType, true)
-    .add("state", StringType, true)
-    .add("country", StringType, true)
-     .add("coordinates", StringType, true)
-     .add("timezone", StringType, true)
+    .add("latitude", StringType, true)
+    .add("longitude", StringType, true)
 
-     final val schemas:List[StructType]= List[StructType](schema,schema_name,schema_location)
+
+     final val schemas:List[StructType]= List[StructType](schema0,schema,schema_location)
      
   //specify batch interval as a string
   def convertTimeToString(wait_time: Long): String = {
