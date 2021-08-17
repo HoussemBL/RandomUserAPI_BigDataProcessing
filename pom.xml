@@ -7,7 +7,6 @@
   <name>RandomUserProcessing</name>
   
   <packaging>jar</packaging>
-
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<scala.version>2.12.10</scala.version>
