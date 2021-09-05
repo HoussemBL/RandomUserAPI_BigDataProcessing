@@ -1,4 +1,22 @@
+----------------------kafka commands--------------------
 
+
+docker-compose exec kafka  \
+kafka-topics --create --topic users --partitions 1 --replication-factor 1 --if-not-exists --zookeeper zookeeper:2181
+
+
+***Hear from a topic
+docker-compose exec kafka    kafka-console-consumer --bootstrap-server localhost:29092 --topic users --from-beginning 
+
+
+******** delete topic
+docker-compose exec kafka  \
+kafka-topics --zookeeper zookeeper:2181 --delete --topic users
+
+
+
+
+---------------------------------Cassandra---------------------------------------
 first command:   "cqlsh"
 
 
@@ -26,6 +44,7 @@ mysql -u root -p
 
 create DATABASE myusers;
 
+use myusers;
 
 create TABLE total_users_country (batch_id int,
     country VARCHAR(255) ,
