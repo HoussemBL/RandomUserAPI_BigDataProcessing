@@ -7,7 +7,6 @@
   <name>RandomUserProcessing</name>
   
   <packaging>jar</packaging>
-
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<scala.version>2.12.10</scala.version>
@@ -199,11 +198,13 @@
     <version>2.9.9</version>
 </dependency> 
     
-    
-    <dependency>
-    <groupId>com.typesafe.slick</groupId>
-    <artifactId>slick_2.10.1</artifactId>
-    <version>2.0.0-M1</version>
+
+<dependency>
+    <groupId>com.google.code.gson</groupId>
+    <artifactId>gson</artifactId>
+    <version>2.8.5</version>
 </dependency>
+
+
   </dependencies>
 </project>
