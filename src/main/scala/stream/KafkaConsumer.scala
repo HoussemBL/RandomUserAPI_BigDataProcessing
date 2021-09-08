@@ -28,11 +28,10 @@ object KafkaConsumer {
 
     val personStringDF = df_st.selectExpr("CAST(value AS STRING)")
     val personDF = personStringDF.select(from_json(col("value"), schema(0)).as("data"))
-       .select("data.*")
-       .select(from_json(col("data"),schema(1)).as("content"))
-       .select("content.*")
-      .select(col("deviceID"), col("temperature"), from_json(col("location"), schema(2)).as("location"),  col("time"))
-     .select("deviceID", "temperature", "location.*", "time")
+         .select("data.*")
+      .select(col("nat"), col("gender"), from_json(col("name"), schema(1)).as("name"), from_json(col("location"), schema(2)).as("location"))
+      .select("nat", "gender", "name.*", "location.city", "location.state", "location.country").withColumn("id", expr("uuid()"))
+      .select("id","nat", "gender", "title","first","last", "city", "state", "country")
       return personDF
   }
 
@@ -41,7 +40,8 @@ object KafkaConsumer {
     val df = df_out.writeStream
       .format("console")
       .outputMode("append")
-     .trigger(Trigger.ProcessingTime("5 seconds"))
+      .trigger(Trigger.ProcessingTime(intervalBatchStr))
+    // .trigger(Trigger.ProcessingTime("5 seconds"))
       .start()
    
     df
