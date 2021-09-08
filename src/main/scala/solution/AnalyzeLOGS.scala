@@ -23,15 +23,29 @@ object AnalyzeLOGS {
 
     //consuming Kafka topic
     val df = spark.readStream
-      .format("socket")
-      .option("host", "localhost")
-      .option("port", 9999)
-      .load()
+    .format("kafka")
+      .option("kafka.bootstrap.servers", "localhost:9092")
+      .option("subscribe", kafkaprameters.topic)
+      .option("startingOffsets", "earliest") // From starting
 
       
     val df_out = KafkaConsumer.convertStreamToDF(Kafka.getschema(), df)
 
-    val df_read = KafkaConsumer.print_console_StreamingDF("3 seconds", df_out)
+     val df_read = KafkaConsumer.print_console_StreamingDF(Kafka.convertTimeToString(kafkaprameters.timewindow),df_out)
+
+    //write in cassandra
+    df_out.writeStream
+          .trigger(Trigger.ProcessingTime(Kafka.convertTimeToString(kafkaprameters.timewindow)))
+          .outputMode("update")
+          .foreachBatch{ (batchDF: DataFrame, batchId: Long) => KafkaConsumer.save_cassandra(batchDF)}
+          .start()
+
+    //write in mysql
+        df_out.writeStream
+              .trigger(Trigger.ProcessingTime(Kafka.convertTimeToString(kafkaprameters.timewindow)))
+              .outputMode("update")
+              .foreachBatch{ (batchDF: DataFrame, batchId: Long) => KafkaConsumer.save_mysql(batchDF, batchId)}
+              .start()
 
     
 
