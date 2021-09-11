@@ -19,7 +19,7 @@ object AnalyzeLOGS {
 
     val spark = Utils.getSpark()
     import spark.implicits._
-    //val kafkaprameters = Utils.getKafkaParameters()
+    val kafkaprameters = Utils.getKafkaParameters()
 
     //consuming Kafka topic
     val df = spark.readStream
@@ -27,7 +27,7 @@ object AnalyzeLOGS {
       .option("kafka.bootstrap.servers", "localhost:9092")
       .option("subscribe", kafkaprameters.topic)
       .option("startingOffsets", "earliest") // From starting
-
+      .load()
       
     val df_out = KafkaConsumer.convertStreamToDF(Kafka.getschema(), df)
 
