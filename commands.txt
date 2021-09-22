@@ -33,8 +33,6 @@ create TABLE users_ks.randomusers(id text PRIMARY KEY,  nat text, gender text,  
 
 
 
-
-
 select  count(*) from users_ks.randomusers ;
 
 
