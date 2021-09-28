@@ -14,5 +14,6 @@ After that, we apply Lambda architcture.
 
 
 Processed data (stored in mysql) are sent then to Superset apache a dashboard tool.
-Subsequently, we have defined in Superset a dashboard containing some charts ( about new entries) 
+Subsequently, we have defined in Superset a dashboard containing some charts (about new entries).
+
 ![superset](https://github.com/HoussemBL/RandomUserAPI_BigDataProcessing/blob/main/image/superset.png)
