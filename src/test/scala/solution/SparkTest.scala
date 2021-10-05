@@ -33,5 +33,16 @@ test(testName = "Data File loading")
   }
 
 
+  
+  test(testName = "Structure of a dataframe")
+  {
+  val sampleDF=loadDF(spark, "data/sample.csv")
+  val colsList=sampleDF.schema.columns.toList
+    
+    
+  assert(colsList==9, clue="number of columns in the dataframe should be 9"  )
+  assert(colsList.contains("id), clue="the inferred schema should contains a column called id"  )
+  }
+  
 }
 
