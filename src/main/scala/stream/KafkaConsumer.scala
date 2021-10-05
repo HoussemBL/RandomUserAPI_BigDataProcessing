@@ -47,18 +47,6 @@ object KafkaConsumer {
     df
   }
 
-  //store number of visits into mysql
- /* def storeData_mysql(intervalBatch: Long, df_read: StreamingQuery) = {
-    while (df_read.isActive) {
-      if (df_read.lastProgress != null) {
-        val time_visit = df_read.lastProgress.timestamp
-        val visit_num = df_read.lastProgress.sink.numOutputRows
-        //DAO_visit.insert(time_visit, visit_num)
-        println("rows number --> " + df_read.lastProgress.sink.numOutputRows)
-        Thread.sleep(intervalBatch * 1000 - 1000)
-      }
-    }
-  }*/
 
   //store number of visits into mysql
   def save_cassandra( df_read: DataFrame) = {
@@ -90,19 +78,14 @@ object KafkaConsumer {
        // .option("driver", DAO_visit.getDriver())
         .mode("append")   
         .save()
- 
-        
-          // df_agg.write.jdbc(DAO_visit.getURL(),DAO_visit.getTable(),DAO_visit.readMYSQLProperties2())
-    
-  
+
   }
 
   
   
-  //load function used later for testing
-  def loadDF(spark: SparkSession, path:String) : DataFrame={
-  
-    val df= spark.read.option("header",true).option("inferSchema",true).csv(path)
+  //load function (used later for testing)
+  def loadDF(spark: SparkSession, path:String) : DataFrame={  
+     val df= spark.read.option("header",true).option("inferSchema",true).csv(path)
      df
   }
   
