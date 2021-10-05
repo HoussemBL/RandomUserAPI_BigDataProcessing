@@ -99,6 +99,13 @@ object KafkaConsumer {
 
   
   
+  //load function used later for testing
+  def loadDF(spark: SparkSession, path:String) : DataFrame={
+  
+    val df= spark.read.option("header",true).option("inferSchema",true).csv(path)
+     df
+  }
+  
   
   
 
