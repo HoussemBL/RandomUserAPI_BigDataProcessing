@@ -32,7 +32,7 @@ use users_ks;
 create TABLE users_ks.randomusers(id text PRIMARY KEY,  nat text, gender text,  title text, first text,  last text, city text, state text, country text ) ;
 
 
-
+insert into randomusers (id,nat,title) values ('1','TN', 'Mr');
 
 
 select  count(*) from users_ks.randomusers ;
@@ -66,10 +66,6 @@ superset run -p 8088 --with-threads --reload --debugger
 parameter of connection in superset to mysql
 
 mysql+mysqlconnector://root:password@127.0.0.1:3306/myusers
-
-
-
-
 
 
 
