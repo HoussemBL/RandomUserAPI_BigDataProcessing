@@ -1,3 +1,4 @@
+
 package solution
 
 import org.apache.spark._
@@ -15,42 +16,42 @@ import scala.io.Source
 import Utils.Utils
 
 object AnalyzeLOGS {
-  def main(args: Array[String]): Unit = {
+def main(args: Array[String]): Unit = {
 
-    val spark = Utils.getSpark()
-    import spark.implicits._
-    val kafkaprameters = Utils.getKafkaParameters()
+val spark = Utils.getSpark()
+import spark.implicits._
+val kafkaprameters = Utils.getKafkaParameters()
 
-    //consuming Kafka topic
-    val df = spark.readStream
-    .format("kafka")
-      .option("kafka.bootstrap.servers", "localhost:9092")
-      .option("subscribe", kafkaprameters.topic)
-      .option("startingOffsets", "earliest") // From starting
-      .load()
-      
-    val df_out = KafkaConsumer.convertStreamToDF(Kafka.getschema(), df)
+//consuming Kafka topic
+val df = spark.readStream
+.format("kafka")
+.option("kafka.bootstrap.servers", "localhost:9092")
+.option("subscribe", kafkaprameters.topic)
+.option("startingOffsets", "earliest") // From starting
+.load()
 
-     val df_read = KafkaConsumer.print_console_StreamingDF(Kafka.convertTimeToString(kafkaprameters.timewindow),df_out)
+val df_out = KafkaConsumer.convertStreamToDF(Kafka.getschema(), df)
 
-    //write in cassandra
-    df_out.writeStream
-          .trigger(Trigger.ProcessingTime(Kafka.convertTimeToString(kafkaprameters.timewindow)))
-          .outputMode("update")
-          .foreachBatch{ (batchDF: DataFrame, batchId: Long) => KafkaConsumer.save_cassandra(batchDF)}
-          .start()
+val df_read = KafkaConsumer.print_console_StreamingDF(Kafka.convertTimeToString(kafkaprameters.timewindow),df_out)
 
-    //write in mysql
-        df_out.writeStream
-              .trigger(Trigger.ProcessingTime(Kafka.convertTimeToString(kafkaprameters.timewindow)))
-              .outputMode("update")
-              .foreachBatch{ (batchDF: DataFrame, batchId: Long) => KafkaConsumer.save_mysql(batchDF, batchId)}
-              .start()
+//write in cassandra
+df_out.writeStream
+.trigger(Trigger.ProcessingTime(Kafka.convertTimeToString(kafkaprameters.timewindow)))
+.outputMode("update")
+.foreachBatch{ (batchDF: DataFrame, batchId: Long) => KafkaConsumer.save_cassandra(batchDF)}
+.start()
 
-    
+//write in mysql
+df_out.writeStream
+.trigger(Trigger.ProcessingTime(Kafka.convertTimeToString(kafkaprameters.timewindow)))
+.outputMode("update")
+.foreachBatch{ (batchDF: DataFrame, batchId: Long) => KafkaConsumer.save_mysql(batchDF, batchId)}
+.start()
 
-    df_read.awaitTermination()
 
-  }
+
+df_read.awaitTermination()
 
 }
+
+} 
