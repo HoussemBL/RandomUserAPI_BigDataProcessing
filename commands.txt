@@ -1,6 +1,5 @@
 ----------------------kafka commands--------------------
 
-
 docker-compose exec kafka  \
 kafka-topics --create --topic users --partitions 1 --replication-factor 1 --if-not-exists --zookeeper zookeeper:2181
 
@@ -32,7 +31,9 @@ use users_ks;
 create TABLE users_ks.randomusers(id text PRIMARY KEY,  nat text, gender text,  title text, first text,  last text, city text, state text, country text ) ;
 
 
+
 insert into randomusers (id,nat,title) values ('1','TN', 'Mr');
+
 
 
 select  count(*) from users_ks.randomusers ;

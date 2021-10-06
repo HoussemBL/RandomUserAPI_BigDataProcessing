@@ -48,10 +48,12 @@ object KafkaConsumer {
 
 
 
-  //store raw data into cassandra
-  def save_cassandra(df_read: DataFrame) = {
-    val mm: Map[String, String] = Map[String, String]("table" -> "randomusers" /*DAO_Cassandra.getTable()*/,
-        "keyspace" -> "users_ks"/*DAO_Cassandra.getKeySpace()*/)
+
+
+  //store number of visits into mysql
+  def save_cassandra( df_read: DataFrame) = {
+    val mm:Map[String,String]=Map[String,String]("table"-> DAO_Cassandra.getTable(),"keyspace"-> DAO_Cassandra.getKeySpace())
+    // while (df_read.isActive) {
     df_read.write
       .format("org.apache.spark.sql.cassandra")
       .mode("append")
@@ -78,5 +80,17 @@ object KafkaConsumer {
  
 
   }
+
+
+  
+  
+  //load function (used later for testing)
+  def loadDF(spark: SparkSession, path:String) : DataFrame={  
+     val df= spark.read.option("header",true).option("inferSchema",true).csv(path)
+     df
+  }
+  
+  
+
 
 }
